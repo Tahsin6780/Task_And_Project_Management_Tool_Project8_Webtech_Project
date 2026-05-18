@@ -1,4 +1,4 @@
-\function getProjectsForWorkspace($connection, $workspace_id, $includeArchived){
+function getProjectsForWorkspace($connection, $workspace_id, $includeArchived){
     if($includeArchived){
         $sql = "SELECT * FROM projects WHERE workspace_id = ? ORDER BY created_at DESC";
     }else{
