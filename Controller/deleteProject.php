@@ -1,0 +1,40 @@
+<?php
+include "../Model/DatabaseConnection.php";
+session_start();
+header("Content-Type: application/json");
+
+$isLoggedIn = $_SESSION["isLoggedIn"] ?? "";
+if(!$isLoggedIn){
+    echo json_encode(["ok" => false, "message" => "Not logged in"]);
+    exit();
+}
+
+$id = (int)($_GET["id"] ?? 0);
+$workspace_id = $_SESSION["workspace_id"] ?? 0;
+
+if($id <= 0 || !$workspace_id){
+    echo json_encode(["ok" => false, "message" => "Invalid request"]);
+    exit();
+}
+
+$db = new DatabaseConnection();
+$connection = $db->openConnection();
+
+$projResult = $db->getProjectById($connection, "projects", $id);
+if($projResult->num_rows == 0){
+    echo json_encode(["ok" => false, "message" => "Project not found"]);
+    exit();
+}
+$project = $projResult->fetch_assoc();
+if((int)$project["workspace_id"] !== (int)$workspace_id){
+    echo json_encode(["ok" => false, "message" => "Project not in this workspace"]);
+    exit();
+}
+
+$result = $db->deleteProject($connection, "projects", $id);
+if($result){
+    echo json_encode(["ok" => true]);
+}else{
+    echo json_encode(["ok" => false, "message" => "Database error"]);
+}
+?>
