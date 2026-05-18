@@ -52,6 +52,7 @@ $myWorkspaces = $db->getWorkspacesForUser($connection, $user_id);
     </div>
     <div>
         <span>Hello, <?php echo $name;?></span>
+        <a href="projects.php">Projects</a>
         <a href="workspaceSettings.php">Workspace Settings</a>
         <a href="workspaceChoice.php">+ New / Join</a>
         <a href="../Controller/logout.php">Logout</a>
@@ -64,7 +65,7 @@ $myWorkspaces = $db->getWorkspacesForUser($connection, $user_id);
     <p>Invite code: <strong><?php echo $currentWorkspace["invite_code"];?></strong></p>
     <hr/>
     <h3>Projects</h3>
-    <p><em>Projects will appear here (Member 2's feature).</em></p>
+    <p><a href="projects.php"><button>View all projects</button></a> &nbsp; <a href="createProject.php"><button>+ New project</button></a></p>
 </div>
 </body>
 </html>
