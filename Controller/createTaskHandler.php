@@ -104,6 +104,7 @@ if($hasTitleError || $hasDescError || $hasDueError){
 
 $new_task_id = $db->createTask($connection, "tasks", $project_id, $title, $description, $assigned_to, $priority, $due_date);
 if($new_task_id > 0){
+    $db->logActivity($connection, "activity_logs", $project_id, $_SESSION["user_id"], "created task: ".$title);
     Header("Location: ../View/projectBoard.php?project_id=".$project_id);
     exit();
 }else{
