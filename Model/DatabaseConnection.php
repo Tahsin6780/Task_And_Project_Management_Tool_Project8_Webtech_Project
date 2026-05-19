@@ -306,5 +306,67 @@ function deleteTask($connection, $tableName, $id){
     $result = $stmt->execute();
     return $result;
 }
+    function getCommentsForTask($connection, $task_id){
+    $sql = "SELECT c.*, u.name AS author_name FROM comments c INNER JOIN users u ON u.id = c.user_id WHERE c.task_id = ? ORDER BY c.created_at ASC";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("i", $task_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result;
+}
+
+function getCommentById($connection, $tableName, $id){
+    $sql = "SELECT * FROM $tableName WHERE id = ?";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result;
+}
+
+function createComment($connection, $tableName, $task_id, $user_id, $body){
+    $sql = "INSERT INTO $tableName (task_id, user_id, body) VALUES (?, ?, ?)";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("iis", $task_id, $user_id, $body);
+    $result = $stmt->execute();
+    if($result){
+        return $connection->insert_id;
+    }
+    return 0;
+}
+
+function deleteComment($connection, $tableName, $id){
+    $sql = "DELETE FROM $tableName WHERE id = ?";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $result = $stmt->execute();
+    return $result;
+}
+
+function logActivity($connection, $tableName, $project_id, $user_id, $action_text){
+    $sql = "INSERT INTO $tableName (project_id, user_id, action_text) VALUES (?, ?, ?)";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("iis", $project_id, $user_id, $action_text);
+    $result = $stmt->execute();
+    return $result;
+}
+
+function getActivityLogsForProject($connection, $project_id){
+    $sql = "SELECT a.*, u.name AS user_name FROM activity_logs a INNER JOIN users u ON u.id = a.user_id WHERE a.project_id = ? ORDER BY a.created_at DESC LIMIT 50";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("i", $project_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result;
+}
+
+function getActivityLogsForWorkspace($connection, $workspace_id){
+    $sql = "SELECT a.*, u.name AS user_name, p.name AS project_name FROM activity_logs a INNER JOIN users u ON u.id = a.user_id INNER JOIN projects p ON p.id = a.project_id WHERE p.workspace_id = ? ORDER BY a.created_at DESC LIMIT 100";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("i", $workspace_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result;
+}
 }
 ?>
