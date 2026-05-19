@@ -73,7 +73,10 @@ $available = $db->getWorkspaceMembersNotInProject($connection, $workspace_id, $i
 <p id="projectActionResponse" style="color:red"></p>
 
 <h3>Tasks</h3>
-<p><em>Tasks will appear here (Member 3's feature).</em></p>
+<p>
+    <a href="projectBoard.php?project_id=<?php echo $project["id"];?>"><button>Open Board</button></a>
+    <a href="createTask.php?project_id=<?php echo $project["id"];?>"><button>+ New Task</button></a>
+</p>
 
 <h3>Members</h3>
 <table id="projectMembersTable">
