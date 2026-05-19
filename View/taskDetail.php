@@ -49,6 +49,8 @@ if($task["assigned_to"]){
 <html>
 <head>
 <title>Task: <?php echo $task["title"];?></title>
+<script src="../Controller/JS/createCommentValidate.js"></script>
+<script src="../Controller/JS/deleteComment.js"></script>
 <style>
     body{font-family:Arial,sans-serif;margin:20px;}
     .priority{display:inline-block;padding:3px 9px;border-radius:10px;font-size:12px;color:white;}
@@ -76,8 +78,41 @@ if($task["assigned_to"]){
 <p>
     <a href="editTask.php?id=<?php echo $task["id"];?>"><button>Edit</button></a>
 </p>
-
+    //Member 4 comment part
 <h3>Comments</h3>
-<p><em>Comments will appear here (Member 4's feature).</em></p>
+<?php
+$comments = $db->getCommentsForTask($connection, $task["id"]);
+$myId = (int)$_SESSION["user_id"];
+$commentError = $_SESSION["commentError"] ?? "";
+$commentBody = $_SESSION["commentBody"] ?? "";
+unset($_SESSION["commentError"]);
+unset($_SESSION["commentBody"]);
+?>
+<div id="commentsList">
+<?php while($c = $comments->fetch_assoc()){ ?>
+    <div class="comment" id="comment_<?php echo $c["id"];?>" style="background:#f4f5f7;padding:10px;margin:8px 0;border-radius:6px;transition:opacity 0.5s;">
+        <p style="margin:0;"><strong><?php echo $c["author_name"];?></strong> <span style="color:#888;font-size:12px;"><?php echo $c["created_at"];?></span></p>
+        <p style="margin:5px 0 0 0;"><?php echo nl2br($c["body"]);?></p>
+        <?php if((int)$c["user_id"] === $myId){ ?>
+            <button onclick="deleteComment(<?php echo $c["id"];?>)" style="font-size:12px;color:#ef4444;background:none;border:none;cursor:pointer;">Delete</button>
+        <?php } ?>
+    </div>
+<?php } ?>
+</div>
+<form method="post" action="../Controller/createCommentHandler.php" onsubmit="return validateCreateComment()" style="margin-top:15px;">
+<input type="hidden" name="task_id" value="<?php echo $task["id"];?>"/>
+<table>
+<tr>
+    <td>Add a comment</td>
+    <td><textarea name="body" id="commentBody" rows="3" cols="40"><?php echo $commentBody;?></textarea></td>
+    <td style="color:red"><?php echo $commentError;?></td>
+    <td><p id="commentJsError" style="color:red"></p></td>
+</tr>
+<tr>
+    <td></td>
+    <td><input type="submit" value="Post comment"/></td>
+</tr>
+</table>
+</form>
 </body>
 </html>
