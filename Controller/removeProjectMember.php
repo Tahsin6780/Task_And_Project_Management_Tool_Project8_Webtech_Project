@@ -1,6 +1,7 @@
 <?php
 include "../Model/DatabaseConnection.php";
 session_start();
+$db->logActivity($connection, "activity_logs", $project_id, $_SESSION["user_id"], "remove a member from  the project");
 header("Content-Type: application/json");
 
 $isLoggedIn = $_SESSION["isLoggedIn"] ?? "";
