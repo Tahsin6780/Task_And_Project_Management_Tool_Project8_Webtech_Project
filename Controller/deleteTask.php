@@ -40,6 +40,7 @@ if((int)$project["workspace_id"] !== (int)$workspace_id){
 
 $result = $db->deleteTask($connection, "tasks", $id);
 if($result){
+    $db->logActivity($connection, "activity_logs", $task["project_id"], $_SESSION["user_id"], "deleted task: ".$task["title"]);
     echo json_encode(["ok" => true]);
 }else{
     echo json_encode(["ok" => false, "message" => "Database error"]);
