@@ -53,6 +53,7 @@ $myWorkspaces = $db->getWorkspacesForUser($connection, $user_id);
     <div>
         <span>Hello, <?php echo $name;?></span>
         <a href="projects.php">Projects</a>
+        <a href="workspaceActivity.php">Activity</a>
         <a href="workspaceSettings.php">Workspace Settings</a>
         <a href="workspaceChoice.php">+ New / Join</a>
         <a href="../Controller/logout.php">Logout</a>
