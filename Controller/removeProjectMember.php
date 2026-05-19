@@ -1,7 +1,6 @@
 <?php
 include "../Model/DatabaseConnection.php";
 session_start();
-$db->logActivity($connection, "activity_logs", $project_id, $_SESSION["user_id"], "remove a member from  the project");
 header("Content-Type: application/json");
 
 $isLoggedIn = $_SESSION["isLoggedIn"] ?? "";
@@ -35,6 +34,7 @@ if((int)$project["workspace_id"] !== (int)$workspace_id){
 
 $result = $db->removeProjectMember($connection, "project_members", $project_id, $user_id);
 if($result){
+    $db->logActivity($connection, "activity_logs", $project_id, $_SESSION["user_id"], "removed a member from the project");
     echo json_encode(["ok" => true]);
 }else{
     echo json_encode(["ok" => false, "message" => "Database error"]);
