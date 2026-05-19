@@ -45,6 +45,7 @@ if((int)$project["workspace_id"] !== (int)$workspace_id){
 
 $result = $db->updateTaskStatus($connection, "tasks", $id, $status);
 if($result){
+    $db->logActivity($connection, "activity_logs", $task["project_id"], $_SESSION["user_id"], "moved task '".$task["title"]."' to ".$status);
     echo json_encode(["ok" => true]);
 }else{
     echo json_encode(["ok" => false, "message" => "Database error"]);
