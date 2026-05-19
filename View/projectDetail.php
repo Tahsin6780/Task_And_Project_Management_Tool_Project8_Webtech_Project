@@ -98,5 +98,22 @@ $available = $db->getWorkspaceMembersNotInProject($connection, $workspace_id, $i
 } ?>
 </select>
 <button onclick="addProjectMember(<?php echo $project["id"];?>)">Add</button>
+    <hr/>
+<h3>Activity</h3>
+<div style="max-width:600px;">
+<?php
+$activity = $db->getActivityLogsForProject($connection, $project["id"]);
+if($activity->num_rows == 0){
+    echo "<p><em>No activity yet.</em></p>";
+}else{
+    while($a = $activity->fetch_assoc()){
+        echo "<div style='border-left:3px solid #3b82f6;padding:6px 10px;margin:6px 0;background:#f9fafb;'>";
+        echo "<strong>".$a["user_name"]."</strong> ".$a["action_text"];
+        echo "<br/><span style='color:#888;font-size:12px;'>".$a["created_at"]."</span>";
+        echo "</div>";
+    }
+}
+?>
+</div>
 </body>
 </html>
