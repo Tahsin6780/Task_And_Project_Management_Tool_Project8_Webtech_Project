@@ -38,7 +38,9 @@ if((int)$project["workspace_id"] !== (int)$workspace_id){
 
 $result = $db->setProjectArchived($connection, "projects", $id, $archived);
 if($result){
-    echo json_encode(["ok" => true]);
+    $actionText = $newState ? "archived project: ".$project["name"] : "unarchived project: ".$project["name"];
+    $db->logActivity($connection, "activity_logs", $project["id"], $_SESSION["user_id"], $actionText);
+    echo json_encode(["ok" => true, "archived" => $newState]);
 }else{
     echo json_encode(["ok" => false, "message" => "Database error"]);
 }
