@@ -1,7 +1,6 @@
 <?php
 include "../Model/DatabaseConnection.php";
 session_start();
-$db->logActivity($connection, "activity_logs", $project_id, $_SESSION["user_id"], "added a member to the project");
 header("Content-Type: application/json");
 
 $isLoggedIn = $_SESSION["isLoggedIn"] ?? "";
@@ -42,6 +41,7 @@ if($wsCheck->num_rows == 0){
 
 $result = $db->addProjectMember($connection, "project_members", $project_id, $user_id);
 if($result){
+    $db->logActivity($connection, "activity_logs", $project_id, $_SESSION["user_id"], "added a member to the project");
     echo json_encode(["ok" => true]);
 }else{
     echo json_encode(["ok" => false, "message" => "Database error"]);
