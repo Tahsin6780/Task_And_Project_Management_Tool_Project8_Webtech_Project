@@ -245,5 +245,66 @@ function getWorkspaceMembersNotInProject($connection, $workspace_id, $project_id
     $result = $stmt->get_result();
     return $result;
 }
+    function getTasksForProject($connection, $project_id){
+    $sql = "SELECT t.*, u.name AS assignee_name FROM tasks t LEFT JOIN users u ON u.id = t.assigned_to WHERE t.project_id = ? ORDER BY t.created_at DESC";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("i", $project_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result;
+}
+
+function getTaskById($connection, $tableName, $id){
+    $sql = "SELECT * FROM $tableName WHERE id = ?";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result;
+}
+
+function getUserById($connection, $tableName, $id){
+    $sql = "SELECT * FROM $tableName WHERE id = ?";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result;
+}
+
+function createTask($connection, $tableName, $project_id, $title, $description, $assigned_to, $priority, $due_date){
+    $sql = "INSERT INTO $tableName (project_id, title, description, assigned_to, priority, due_date, status) VALUES (?, ?, ?, ?, ?, ?, 'todo')";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("ississ", $project_id, $title, $description, $assigned_to, $priority, $due_date);
+    $result = $stmt->execute();
+    if($result){
+        return $connection->insert_id;
+    }
+    return 0;
+}
+
+function updateTask($connection, $tableName, $id, $title, $description, $assigned_to, $priority, $due_date){
+    $sql = "UPDATE $tableName SET title = ?, description = ?, assigned_to = ?, priority = ?, due_date = ? WHERE id = ?";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("ssissi", $title, $description, $assigned_to, $priority, $due_date, $id);
+    $result = $stmt->execute();
+    return $result;
+}
+
+function updateTaskStatus($connection, $tableName, $id, $status){
+    $sql = "UPDATE $tableName SET status = ? WHERE id = ?";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("si", $status, $id);
+    $result = $stmt->execute();
+    return $result;
+}
+
+function deleteTask($connection, $tableName, $id){
+    $sql = "DELETE FROM $tableName WHERE id = ?";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $result = $stmt->execute();
+    return $result;
+}
 }
 ?>
