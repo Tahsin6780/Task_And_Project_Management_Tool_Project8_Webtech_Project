@@ -97,9 +97,8 @@ if($exists->num_rows > 0){
 
 $new_project_id = $db->createProject($connection, "projects", $workspace_id, $name, $description, $deadline, $color_label);
 if($new_project_id > 0){
-    // creator becomes a project member automatically
-    $db->addProjectMember($connection, "project_members", $new_project_id, $user_id);
-    $_SESSION["createMessage"] = "Project '".$name."' created.";
+    $db->addProjectMember($connection, "project_members", $new_project_id, $owner_id);
+    $db->logActivity($connection, "activity_logs", $new_project_id, $_SESSION["user_id"], "created project: ".$name);
     Header("Location: ../View/projects.php");
     exit();
 }else{
