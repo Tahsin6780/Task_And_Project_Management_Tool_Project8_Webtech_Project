@@ -17,5 +17,14 @@ function validateEditProject(){
         document.getElementById("editDescJsError").innerHTML = "Description must be 500 characters or fewer";
         ok = false;
     }
+    if(deadline != ""){
+        let today = new Date();
+        today.setHours(0,0,0,0);
+        let d = new Date(deadline);
+        if(d < today){
+            document.getElementById("projDeadlineJsError").innerHTML = "Deadline cannot be in the past";
+            ok = false;
+        }
+    }
     return ok;
 }
